@@ -109,6 +109,13 @@ function displayTotal(validCount, duplicateCount, invalidCount) {
 function displayTotalScans(totalCount) {
     document.getElementById("totalScans").textContent = totalCount;
 }
+
+    document.addEventListener('keydown', function(event) {
+    if (event.key === 'F6') {
+          event.preventDefault();
+        checkReceipts();
+    }
+});
 </script>
 
 </body>
