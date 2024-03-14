@@ -63,7 +63,7 @@ function checkReceipts() {
     displayInvalidScans(invalidScans);
     displayTotal(validScans.length, duplicateScans.length, invalidScans.length);
     displayTotalScans(receipts.length);
-    document.getElementById("receipts").focus()
+    
 }
 }
 
@@ -108,6 +108,7 @@ function displayTotal(validCount, duplicateCount, invalidCount) {
 
 function displayTotalScans(totalCount) {
     document.getElementById("totalScans").textContent = totalCount;
+    document.getElementById("receipts").focus()
 }
 </script>
 
