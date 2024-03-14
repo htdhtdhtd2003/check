@@ -4,30 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Receipt Scanner</title>
+
 <style>
-    .valid {
+   .valid {
         color: green;
+    }
+    .duplicate {
+        color: blue;
     }
     .invalid {
         color: red;
+    }
+    .column {
+        float: left;
+        width: 30%;
+        padding: 10px;
     }
 </style>
 </head>
 <body>
 <h2>Receipt Scanner</h2>
-<p>Enter scanned receipts:</p>
+<br>
+<p>Scan receipts:</p>
 <textarea id="receipts" rows="10" cols="50"></textarea><br>
 <button onclick="checkReceipts()">Check Receipts</button><br><br>
-<p>Valid Scans:</p>
-<div id="validScans"></div><br>
-<p>Duplicate Scan:</p>
-<div id="duplicateScans"></div><br>
-<p>Invalid Scans:</p>
-<div id="invalidScans"></div><br>
-<p>Total Valid Scans: <span id="totalValid"></span></p>
-<p>Total Duplicate Scans: <span id="totalDuplicate"></span></p>
-<p>Total Invalid Scans: <span id="totalInvalid"></span></p>
 <p>Total Scans: <span id="totalScans"></span></p>
+
+
+<div class="column">
+    <h3>Valid Scans:</h3>
+    <div id="validScans"></div>
+    <p>Total Valid Scans: <span id="totalValid"></span></p>
+</div>
+<div class="column">
+    <h3>Duplicate Scans:</h3>
+    <div id="duplicateScans"></div>
+    <p>Total Duplicate Scans: <span id="totalDuplicate"></span></p>
+</div>
+<div class="column">
+    <h3>Invalid Scans:</h3>
+    <div id="invalidScans"></div>
+    <p>Total Invalid Scans: <span id="totalInvalid"></span></p>
+</div>
+
+
+
+
 
 <script>
 function checkReceipts() {
@@ -112,7 +134,7 @@ function displayTotalScans(totalCount) {
     document.getElementById("totalScans").textContent = totalCount;
 }
 
-    document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function(event) {
     if (event.key === 'F6') {
           event.preventDefault();
         checkReceipts();
