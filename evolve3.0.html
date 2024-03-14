@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receipt Scanner</title>
+<style>
+    .valid {
+        color: green;
+    }
+    .invalid {
+        color: red;
+    }
+</style>
+</head>
+<body>
+<h2>Receipt Scanner</h2>
+<p>Enter scanned receipts:</p>
+<textarea id="receipts" rows="10" cols="50"></textarea><br>
+<button onclick="checkReceipts()">Check Receipts</button><br><br>
+<p>Valid Scans:</p>
+<div id="validScans"></div><br>
+<p>Duplicate Scan:</p>
+<div id="duplicateScans"></div><br>
+<p>Invalid Scans:</p>
+<div id="invalidScans"></div><br>
+<p>Total Valid Scans: <span id="totalValid"></span></p>
+<p>Total Duplicate Scans: <span id="totalDuplicate"></span></p>
+<p>Total Invalid Scans: <span id="totalInvalid"></span></p>
+<p>Total Scans: <span id="totalScans"></span></p>
+
+<script>
+function checkReceipts() {
+    var input = document.getElementById("receipts").value.trim();
+    var receipts = input.split("\n");
+    var firstFourDigits = null;
+    var validScans = [];
+    var duplicateScans = [];
+    var invalidScans = [];
+
+    receipts.forEach(function(receipt) {
+        if (receipt.match(/^\d{4}-\d{7}$/)) {
+            var currentFirstFourDigits = receipt.substr(0, 4);
+            var currentLastSevenDigits = receipt.substr(5);
+            if (firstFourDigits === null) {
+                firstFourDigits = currentFirstFourDigits;
+            }
+            if (currentFirstFourDigits === firstFourDigits && validScans.every(scan => scan.substr(5) !== currentLastSevenDigits)) {
+                validScans.push(receipt);
+            } else if (currentFirstFourDigits === firstFourDigits && duplicateScans.every(scan => scan.substr(5) == currentLastSevenDigits)){
+               duplicateScans.push(receipt);
+            }
+            else {
+               invalidScans.push(receipt);
+            }
+        } else {
+            invalidScans.push(receipt);
+        }
+    });
+
+    displayValidScans(validScans);
+     displayDuplicateScans(duplicateScans);
+    displayInvalidScans(invalidScans);
+    displayTotal(validScans.length, duplicateScans.length, invalidScans.length);
+    displayTotalScans(receipts.length);
+}
+
+function displayValidScans(scans) {
+    var validScansDiv = document.getElementById("validScans");
+    validScansDiv.innerHTML = "";
+    scans.forEach(function(scan) {
+        var p = document.createElement("p");
+        p.textContent = scan;
+        p.className = "valid";
+        validScansDiv.appendChild(p);
+    });
+}
+
+function displayDuplicateScans(scans) {
+    var duplicateScansDiv = document.getElementById("duplicateScans");
+    duplicateScansDiv.innerHTML = "";
+    scans.forEach(function(scan) {
+        var p = document.createElement("p");
+        p.textContent = scan;
+        p.className = "duplicate";
+        duplicateScansDiv.appendChild(p);
+    });
+}
+
+function displayInvalidScans(scans) {
+    var invalidScansDiv = document.getElementById("invalidScans");
+    invalidScansDiv.innerHTML = "";
+    scans.forEach(function(scan) {
+        var p = document.createElement("p");
+        p.textContent = scan;
+        p.className = "invalid";
+        invalidScansDiv.appendChild(p);
+    });
+}
+
+function displayTotal(validCount, duplicateCount, invalidCount) {
+    document.getElementById("totalValid").textContent = validCount;
+    document.getElementById("totalDuplicate").textContent = duplicateCount;
+    document.getElementById("totalInvalid").textContent = invalidCount;
+}
+
+function displayTotalScans(totalCount) {
+    document.getElementById("totalScans").textContent = totalCount;
+}
+</script>
+
+</body>
+</html>
