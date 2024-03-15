@@ -33,7 +33,7 @@
 <h2>Final Check</h2>
 <br>
 <p>Scan receipts:</p>
-<textarea id="receipts" rows="10" cols="50"></textarea><br>
+<textarea id="receipts"  rows="10" cols="20" ="" ></textarea><br>
 <button onclick="checkReceipts()">Check Receipts</button><br><br>
 <p>Total Scans: <span id="totalScans"></span></p>
 
@@ -53,7 +53,7 @@
     <p>Total Invalid Scans: <span id="totalInvalid"></span></p>
 </div>
 
-<br>
+
 
 <input type="text" id="compareInput" placeholder="Scan Rx Barcode" onkeydown="suppressF11F12(event)" oninput="compareBarcode()">  
   <p id="compare"></p>
@@ -62,7 +62,28 @@
    <p id="scanCount"></p>
  
 <script>
+window.onload = function() {
+    document.getElementById("receipts").focus();
+}
+// Get the textarea element
+var textarea = document.getElementById("receipts");
 
+textarea.addEventListener("keydown", function(event) {
+    // Check if the Enter key is pressed (key code 13)
+    if (event.keyCode === 13) {
+        // Start timer when Enter key is pressed
+        startTimer();
+    }
+});
+
+// Function to start the timer
+function startTimer() {
+   setTimeout(function() {
+      checkReceipts();
+       document.getElementById("compareInput").focus()
+   
+}, 3000); 
+}
 
 function suppressF11F12(event) {
     if (event.key === "F11" || event.key === "F12") {
@@ -90,6 +111,7 @@ function checkReceipts() {
                 validScans.push(receipt);
             } else if (currentFirstFourDigits === firstFourDigits && duplicateScans.every(scan => scan.substr(5) == currentLastSevenDigits)){
                duplicateScans.push(receipt);
+               console.log(firstFourDigits)
             }
             else {
                invalidScans.push(receipt);
@@ -156,7 +178,7 @@ function compareWithValidScans(number, validScans) {
       removegreenred();
    document.getElementById("compare").textContent = "";
    document.getElementById("compareInput").value=""
-}, 2000); // 3000 milliseconds = 3 seconds
+}, 2000); // 2000 milliseconds = 2 seconds
 
     validScans.forEach(function(scan) {
         if (scan.substr(5) === number) {
