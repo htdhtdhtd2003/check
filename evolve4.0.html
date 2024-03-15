@@ -20,16 +20,22 @@
         width: 30%;
         padding: 10px;
     }
+    
+    .green {
+        background-color: lightgreen;
+    }
+    .red {
+        background-color: lightcoral;
+    }
 </style>
 </head>
 <body>
-<h2>Receipt Scanner</h2>
+<h2>Final Check</h2>
 <br>
 <p>Scan receipts:</p>
 <textarea id="receipts" rows="10" cols="50"></textarea><br>
 <button onclick="checkReceipts()">Check Receipts</button><br><br>
 <p>Total Scans: <span id="totalScans"></span></p>
-
 
 <div class="column">
     <h3>Valid Scans:</h3>
@@ -49,9 +55,21 @@
 
 
 
-
-
+<input type="text" id="compareInput" placeholder="Scan Rx Barcode" onkeydown="suppressF11F12(event)" oninput="compareBarcode()">  
+  <p id="compare"></p>
+  <button id="clearButton">Reset</button>
+ 
+   <p id="scanCount"></p>
+ 
 <script>
+
+
+function suppressF11F12(event) {
+    if (event.key === "F11" || event.key === "F12") {
+        event.preventDefault();}
+}
+
+
 function checkReceipts() {
     var input = document.getElementById("receipts").value.trim();
     var receipts = input.split("\n");
@@ -59,6 +77,7 @@ function checkReceipts() {
     var validScans = [];
     var duplicateScans = [];
     var invalidScans = [];
+    var compareNumber = document.getElementById("compareInput").value.trim(); // Get the value of the 7-digit number input box
 
     receipts.forEach(function(receipt) {
         if (receipt.match(/^\d{4}-\d{7}$/)) {
@@ -81,14 +100,80 @@ function checkReceipts() {
     });
 
     displayValidScans(validScans);
-     displayDuplicateScans(duplicateScans);
+    displayDuplicateScans(duplicateScans);
     displayInvalidScans(invalidScans);
     displayTotal(validScans.length, duplicateScans.length, invalidScans.length);
     displayTotalScans(receipts.length);
+// Compare the input number with the last 7 digits of valid scans
+var input = document.getElementById("compareInput").value;
+ if (input.length === 7) {
+    compareWithValidScans(compareNumber, validScans);
+ }
+}
+
+
+function compareBarcode(){
+  var input = document.getElementById("compareInput").value;
+ if (input.length === 7) {
+   checkReceipts()
+}
+}
+
+function green() {
+       
+        var textbox2Element = document.getElementById("compareInput");
+         
+            textbox2Element.classList.add("green");
+          }
+
+function red() {
+     
+        var textbox2Element = document.getElementById("compareInput");
+           
+           
+            textbox2Element.classList.add("red");
+          } 
+
+
+function removegreenred(){
+     
+        var textbox2Element = document.getElementById("compareInput");
+          
+           textbox2Element.classList.remove("green");
+       
+           textbox2Element.classList.remove("red");
+       
+            textbox2Element.classList.add("white");
+    }     
+
+
+
+function compareWithValidScans(number, validScans) {
+    var result = "Not found";
+    document.getElementById("compare").textContent = "mismatch"
+     red() ;
     setTimeout(function() {
-      document.getElementById("receipts").value = ""
-    document.getElementById("receipts").focus()
-}, 3000);
+      removegreenred();
+   document.getElementById("compare").textContent = "";
+   document.getElementById("compareInput").value=""
+}, 2000); // 3000 milliseconds = 3 seconds
+
+    validScans.forEach(function(scan) {
+        if (scan.substr(5) === number) {
+            result = "Found";
+            removegreenred();
+            green();
+            document.getElementById("compare").textContent = "match"
+            document.getElementById("compareInput").value=""
+           
+            setTimeout(function() {
+      removegreenred();
+   document.getElementById("compare").textContent = "";
+}, 2000); // 3000 milliseconds = 3 seconds
+ //
+        }
+    });
+    //alert(result); // Display the result to the user (you can modify this to display it in a more appropriate way)
 }
 
 function displayValidScans(scans) {
@@ -140,6 +225,48 @@ document.addEventListener('keydown', function(event) {
         checkReceipts();
     }
 });
+
+// ***listener F6 to clear textbox
+document.addEventListener('keydown', function(event) {
+            // Check if F6 is pressed
+            if (event.key === 'F6') { // Key code for F6 is 117
+                event.preventDefault(); // Prevent default behavior of the key combination
+              
+                
+  document.getElementById("compareInput").value =""
+  document.getElementById("receipts").value =""
+ validScans = [];
+    duplicateScans = [];
+    invalidScans = [];
+    document.getElementById("totalValid").textContent = "";
+    document.getElementById("totalDuplicate").textContent = "";
+    document.getElementById("totalInvalid").textContent = "";
+    document.getElementById("validScans").textContent = "";
+    document.getElementById("invalidScans").textContent = "";
+    document.getElementById("duplicateScans").textContent = "";
+    document.getElementById("totalScans").textContent = "";
+document.getElementById("receipts").focus()
+           }
+        });
+
+document.getElementById("clearButton").addEventListener("click", function() {
+  document.getElementById("compareInput").value =""
+  document.getElementById("receipts").value =""
+   validScans = [];
+    duplicateScans = [];
+    invalidScans = [];
+    document.getElementById("totalValid").textContent = "";
+    document.getElementById("totalDuplicate").textContent = "";
+    document.getElementById("totalInvalid").textContent = "";
+    document.getElementById("validScans").textContent = "";
+    document.getElementById("invalidScans").textContent = "";
+    document.getElementById("duplicateScans").textContent = "";
+    document.getElementById("totalScans").textContent = "";
+    document.getElementById("receipts").focus();
+});
+
+
+
 </script>
 
 </body>
